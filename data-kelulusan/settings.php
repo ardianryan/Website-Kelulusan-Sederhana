@@ -1,16 +1,43 @@
 <?php
 require_once __DIR__ . '/config.php';
 use App\Models\Setting;
+use App\Models\Admin;
 
 checkAuth();
 
 $message = '';
+$error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle Text Settings
     if (isset($_POST['settings'])) {
         foreach ($_POST['settings'] as $key => $value) {
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
+        }
+    }
+
+    // Handle Password Change
+    if (!empty($_POST['new_password'])) {
+        $current_pass = $_POST['current_password'] ?? '';
+        $new_pass = $_POST['new_password'];
+        $confirm_pass = $_POST['confirm_password'];
+
+        $admin = Admin::find($_SESSION['admin_id']);
+        
+        if ($admin && password_verify($current_pass, $admin->password)) {
+            if ($new_pass === $confirm_pass) {
+                if (strlen($new_pass) >= 5) {
+                    $admin->password = password_hash($new_pass, PASSWORD_DEFAULT);
+                    $admin->save();
+                    $message = "Pengaturan dan Password berhasil diperbarui.";
+                } else {
+                    $error = "Password baru minimal 5 karakter.";
+                }
+            } else {
+                $error = "Konfirmasi password baru tidak cocok.";
+            }
+        } else {
+            $error = "Password saat ini salah.";
         }
     }
 
@@ -29,7 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
-    $message = "Pengaturan berhasil disimpan.";
+    if (!$error && empty($message)) {
+        $message = "Pengaturan berhasil disimpan.";
+    }
 }
 
 $settings = Setting::pluck('value', 'key')->toArray();
@@ -90,6 +119,12 @@ $settings = Setting::pluck('value', 'key')->toArray();
             </div>
         <?php endif; ?>
 
+        <?php if ($error): ?>
+            <div class="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-2xl mb-6 flex items-center gap-3">
+                <span class="material-icons">error</span> <?= $error ?>
+            </div>
+        <?php endif; ?>
+
         <form method="POST" enctype="multipart/form-data" class="max-w-2xl space-y-8">
             <div class="glass p-8 rounded-3xl space-y-6">
                 <h3 class="text-lg font-bold border-b border-white/10 pb-4">Informasi Umum</h3>
@@ -133,6 +168,26 @@ $settings = Setting::pluck('value', 'key')->toArray();
                     <input type="datetime-local" name="settings[countdown_date]" class="input-glass" value="<?= date('Y-m-d\TH:i', strtotime($settings['countdown_date'] ?? 'now')) ?>" required>
                     <p class="text-xs text-slate-500 mt-2">Format: Tanggal dan Waktu (Asia/Jakarta)</p>
                 </div>
+            </div>
+
+            <div class="glass p-8 rounded-3xl space-y-6">
+                <h3 class="text-lg font-bold border-b border-white/10 pb-4">Keamanan Akun</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Password Saat Ini</label>
+                        <input type="password" name="current_password" class="input-glass" placeholder="Wajib diisi untuk ubah password">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Password Baru</label>
+                        <input type="password" name="new_password" class="input-glass" placeholder="Minimal 5 karakter">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Konfirmasi Password Baru</label>
+                        <input type="password" name="confirm_password" class="input-glass" placeholder="Ulangi password baru">
+                    </div>
+                </div>
+                <p class="text-[11px] text-slate-500 italic">*Kosongkan jika tidak ingin mengubah password admin.</p>
             </div>
 
             <button type="submit" class="bg-[#40A69F] hover:bg-[#2B7A6D] text-white px-10 py-4 rounded-2xl font-bold transition shadow-lg shadow-emerald-500/20">
