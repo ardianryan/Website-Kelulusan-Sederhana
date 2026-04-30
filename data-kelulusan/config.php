@@ -33,7 +33,6 @@ $capsule->addConnection([
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
-// Maintain $pdo for backward compatibility
 try {
     $pdo = Capsule::connection()->getPdo();
 } catch (Exception $e) {
@@ -52,42 +51,33 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-/**
- * Dynamic Base URL Helper
- * Simplified to prevent double paths and loops
- */
 function baseUrl($path = '') {
     $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
     $scriptDir = rtrim($scriptDir, '/');
-    
-    // Normalize if running from data-kelulusan directly
     if (strpos($scriptDir, '/data-kelulusan') !== false) {
         $scriptDir = str_replace('/data-kelulusan', '', $scriptDir);
     }
-    
     $fullPath = $scriptDir . '/' . ltrim($path, '/');
     return rtrim($fullPath, '/') ?: '/';
 }
 
-/**
- * Helper to get settings
- */
 function getSetting($key, $default = '') {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT `value` FROM settings WHERE `key` = ?");
-    $stmt->execute([$key]);
-    $result = $stmt->fetch();
-    return $result ? $result['value'] : $default;
+    static $cachedSettings = null;
+    if ($cachedSettings === null) {
+        try {
+            $stmt = $pdo->query("SELECT `key`, `value` FROM settings");
+            $cachedSettings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        } catch (Exception $e) {
+            return $default;
+        }
+    }
+    return $cachedSettings[$key] ?? $default;
 }
 
-/**
- * Check if logged in
- */
 function checkAuth() {
     if (!isset($_SESSION['admin_id'])) {
-        session_write_close();
         header("Location: " . baseUrl('login'));
         exit;
     }
 }
-?>

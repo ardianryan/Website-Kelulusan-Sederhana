@@ -27,18 +27,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `$db_name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         $pdo->exec("USE `$db_name`");
 
-        // 3. Read and execute setup.sql
-        $sqlFile = __DIR__ . '/sql/setup.sql';
-        if (!file_exists($sqlFile)) {
-            throw new Exception("File sql/setup.sql tidak ditemukan.");
-        }
+        // 3. Create Tables and Default Data directly (Bulletproof method)
+        $queries = [
+            "CREATE TABLE IF NOT EXISTS admins (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(50) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )",
+            "CREATE TABLE IF NOT EXISTS students (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nisn VARCHAR(255) NOT NULL UNIQUE,
+                nama VARCHAR(100) NOT NULL,
+                jk VARCHAR(10) NOT NULL,
+                kelas VARCHAR(50) NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                lulus BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )",
+            "CREATE TABLE IF NOT EXISTS settings (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                `key` VARCHAR(50) NOT NULL UNIQUE,
+                `value` TEXT,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )",
+            "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('school_name', 'SMA Negeri 1 Sooko')",
+            "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('welcome_text', 'Selamat Datang di Portal Pengumuman Kelulusan')",
+            "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('meta_description', 'Portal Resmi Pengumuman Kelulusan Siswa SMA Negeri 1 Sooko Tahun Pelajaran 2025/2026.')",
+            "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('skl_info', 'Pengambilan SKL dapat dilakukan pada 5 Mei 2026')",
+            "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('countdown_date', '2026-05-05 07:00:00')",
+            "INSERT IGNORE INTO admins (username, password) VALUES ('admin', '\$2y\$10\$BiE3omqwQy2KaDF/7ZkkNuc16g55cK4krhB84M8in3iLnAx.G/rce')"
+        ];
 
-        $sql = file_get_contents($sqlFile);
-        // Remove database creation parts as we handled it
-        $sql = preg_replace('/CREATE DATABASE IF NOT EXISTS.*?;/i', '', $sql);
-        $sql = preg_replace('/USE.*?;/i', '', $sql);
-        
-        $pdo->exec($sql);
+        foreach ($queries as $query) {
+            try {
+                $pdo->exec($query);
+            } catch (PDOException $e) {
+                throw new Exception("Gagal menjalankan query: " . substr($query, 0, 50) . "... | Error: " . $e->getMessage());
+            }
+        }
 
         // 4. Generate .env
         $envContent = "DB_HOST=$db_host\nDB_NAME=$db_name\nDB_USER=$db_user\nDB_PASS=$db_pass\n";
@@ -51,6 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  */
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 // Load .env
 if (file_exists(__DIR__ . '/../.env')) {
     \$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
@@ -62,13 +91,29 @@ if (file_exists(__DIR__ . '/../.env')) {
 \$username = \$_ENV['DB_USER'] ?? 'root';
 \$password = \$_ENV['DB_PASS'] ?? '';
 
+// Initialize Eloquent
+\$capsule = new Capsule;
+\$capsule->addConnection([
+    'driver' => 'mysql',
+    'host' => \$host,
+    'database' => \$dbname,
+    'username' => \$username,
+    'password' => \$password,
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
+    'prefix' => '',
+]);
+
+\$capsule->setAsGlobal();
+\$capsule->bootEloquent();
+
 try {
-    \$pdo = new PDO(\"mysql:host=\$host;dbname=\$dbname;charset=utf8mb4\", \$username, \$password);
-    \$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    \$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException \$e) {
+    \$pdo = Capsule::connection()->getPdo();
+} catch (Exception \$e) {
     die(\"Connection failed: \" . \$e->getMessage());
 }
+
+require_once __DIR__ . '/models.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_name('sman1sooko_admin');
