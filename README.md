@@ -46,4 +46,4 @@ Website portal pengumuman kelulusan siswa berbasis PHP yang modern, responsif, d
 - `home.php`: Halaman depan (portal siswa).
 
 ---
-© 2026 Tim IT SMA Negeri 1 Sooko
+ArdianRyan
