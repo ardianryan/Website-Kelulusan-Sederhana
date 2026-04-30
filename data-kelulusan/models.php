@@ -7,14 +7,14 @@ class Student extends Model
 {
     protected $table = 'students';
     protected $fillable = ['nisn', 'nama', 'jk', 'kelas', 'password', 'lulus'];
-    public $timestamps = true;
+    public $timestamps = false;
 }
 
 class Admin extends Model
 {
     protected $table = 'admins';
     protected $fillable = ['username', 'password'];
-    public $timestamps = true;
+    public $timestamps = false;
 }
 
 class Setting extends Model
