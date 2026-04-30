@@ -4,10 +4,16 @@ $stmt = $pdo->query("SELECT * FROM settings");
 while ($row = $stmt->fetch()) {
     $settings[$row['key']] = $row['value'];
 }
+
+// Calculate Dynamic Academic Year
+$currentYear = date('Y');
+$prevYear = $currentYear - 1;
+$academicYear = $prevYear . '/' . $currentYear;
+
 $schoolName = $settings['school_name'] ?? 'SMA Negeri 1 Sooko';
 $welcomeText = $settings['welcome_text'] ?? 'Selamat Datang di Portal Pengumuman Kelulusan';
-$metaDesc = $settings['meta_description'] ?? 'Portal Resmi Pengumuman Kelulusan Siswa SMA Negeri 1 Sooko Tahun Pelajaran 2025/2026.';
-$countdownDate = $settings['countdown_date'] ?? '2026-05-05 07:00:00';
+$metaDesc = $settings['meta_description'] ?? "Portal Resmi Pengumuman Kelulusan Siswa SMA Negeri 1 Sooko Tahun Pelajaran $academicYear.";
+$countdownDate = $settings['countdown_date'] ?? "$currentYear-05-05 07:00:00";
 $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']) : '/logo.png';
 ?>
 <!doctype html>
@@ -21,7 +27,7 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
     <!-- SEO & Metadata -->
     <meta name="description" content="<?= htmlspecialchars($metaDesc) ?>">
     <meta name="keywords" content="Pengumuman, Kelulusan, SMAN 1 Sooko, SKL, Siswa">
-    <meta name="author" content="Tim IT SMAN 1 Sooko">
+    <meta name="author" content="ArdianRyan">
     <meta name="theme-color" content="#0f172a">
 
     <!-- Open Graph / Facebook -->
@@ -467,7 +473,7 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                     <span id="welcomeTextDisplay"><?= htmlspecialchars($welcomeText) ?></span>
                 </h1>
                 <p style="color:rgba(255,255,255,.6);font-size:15px;line-height:1.5;margin-bottom:16px;">
-                    Tahun Pelajaran 2025/2026
+                    Tahun Pelajaran <?= $academicYear ?>
                 </p>
                 <div
                     style="display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:6px 16px;border-radius:20px;gap:6px;">
@@ -923,7 +929,7 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                 <span style="background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px;">SURAT KETERANGAN LULUS</span>
             </div>
             <h2 style="font-size:32px;font-weight:800;color:#fff;margin-bottom:4px; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">LULUS</h2>
-            <p style="color:rgba(255,255,255,.9);font-size:13px;text-transform: uppercase; letter-spacing: 1px;">Tahun Pelajaran 2025/2026</p>
+            <p style="color:rgba(255,255,255,.9);font-size:13px;text-transform: uppercase; letter-spacing: 1px;">Tahun Pelajaran <?= $academicYear ?></p>
             
             <!-- Left/Right Ticket Cutouts -->
             <div style="position: absolute; bottom: -12px; left: -12px; width: 24px; height: 24px; background: #0f172a; border-radius: 50%; border-top: 1px solid rgba(255,255,255,0.2); border-right: 1px solid rgba(255,255,255,0.2);"></div>
@@ -975,7 +981,7 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                 <span style="background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px;">PENGUMUMAN HASIL</span>
             </div>
             <h2 style="font-size:26px;font-weight:800;color:#fff;margin-bottom:4px; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">TIDAK LULUS</h2>
-            <p style="color:rgba(255,255,255,.8);font-size:13px;text-transform: uppercase; letter-spacing: 1px;">Tahun Pelajaran 2025/2026</p>
+            <p style="color:rgba(255,255,255,.8);font-size:13px;text-transform: uppercase; letter-spacing: 1px;">Tahun Pelajaran <?= $academicYear ?></p>
             
             <!-- Left/Right Ticket Cutouts -->
             <div style="position: absolute; bottom: -12px; left: -12px; width: 24px; height: 24px; background: #0f172a; border-radius: 50%; border-top: 1px solid rgba(255,255,255,0.2); border-right: 1px solid rgba(255,255,255,0.2);"></div>
@@ -1058,7 +1064,7 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
         const defaultConfig = {
             school_name: 'SMA Negeri 1 Sooko',
             welcome_text: 'Selamat Datang di Portal Pengumuman Kelulusan',
-            meta_description: 'Cek hasil kelulusan siswa SMA Negeri 1 Sooko Tahun Pelajaran 2025/2026 secara online.',
+            meta_description: 'Cek hasil kelulusan siswa SMA Negeri 1 Sooko Tahun Pelajaran <?= $academicYear ?> secara online.',
             skl_info: 'Pengambilan SKL dapat dilakukan pada 5 Mei 2026',
             background_color: '#0f172a',
             surface_color: 'rgba(255,255,255,0.08)',

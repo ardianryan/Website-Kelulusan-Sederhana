@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             )",
             "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('school_name', 'SMA Negeri 1 Sooko')",
             "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('welcome_text', 'Selamat Datang di Portal Pengumuman Kelulusan')",
-            "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('meta_description', 'Portal Resmi Pengumuman Kelulusan Siswa SMA Negeri 1 Sooko Tahun Pelajaran 2025/2026.')",
+            "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('meta_description', 'Portal Resmi Pengumuman Kelulusan Siswa SMA Negeri 1 Sooko Tahun Pelajaran " . (date('Y')-1) . "/" . date('Y') . ".')",
             "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('skl_info', 'Pengambilan SKL dapat dilakukan pada 5 Mei 2026')",
             "INSERT IGNORE INTO settings (`key`, `value`) VALUES ('countdown_date', '2026-05-05 07:00:00')",
             "INSERT IGNORE INTO admins (username, password) VALUES ('admin', '\$2y\$10\$BiE3omqwQy2KaDF/7ZkkNuc16g55cK4krhB84M8in3iLnAx.G/rce')"
