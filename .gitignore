@@ -1,0 +1,5 @@
+.env
+vendor/
+data-kelulusan/install.lock
+uploads/logo_*
+.DS_Store

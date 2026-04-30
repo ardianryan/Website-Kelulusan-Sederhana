@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Frontend Routing
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^data-kelulusan/(.*)$ data-kelulusan/index.php?page=$1 [L,QSA]
+
+# Optional: Redirect /data-kelulusan to /data-kelulusan/
+RewriteRule ^data-kelulusan$ data-kelulusan/ [R=301,L]
