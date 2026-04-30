@@ -799,16 +799,28 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div>
-                            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase;">NISN</p>
-                            <p style="font-size: 14px; font-weight: 600; color: #fff;">${currentStudent.nisn}</p>
+                            <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase;">NISN</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #fff;">${currentStudent.nisn}</p>
                         </div>
                         <div>
-                            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Rombel</p>
-                            <p style="font-size: 14px; font-weight: 600; color: #fff;">${currentStudent.rombel}</p>
+                            <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase;">NIPD</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #fff;">${currentStudent.nipd || '-'}</p>
                         </div>
-                        <div style="grid-column: span 2;">
-                            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Jenis Kelamin</p>
-                            <p style="font-size: 14px; font-weight: 600; color: #fff;">${jkText}</p>
+                        <div>
+                            <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Tempat Lahir</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #fff;">${currentStudent.tempat_lahir || '-'}</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Tanggal Lahir</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #fff;">${currentStudent.tanggal_lahir || '-'}</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Rombel</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #fff;">${currentStudent.rombel}</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Jenis Kelamin</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #fff;">${jkText}</p>
                         </div>
                     </div>
                 </div>
