@@ -1,6 +1,8 @@
 <?php
 require_once 'data-kelulusan/config.php';
 
+use App\Models\Student;
+
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -9,23 +11,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
     if ($action === 'check_nisn') {
-        $stmt = $pdo->prepare("SELECT nisn, nama, jk, kelas FROM students WHERE nisn = ?");
-        $stmt->execute([$nisn]);
-        $student = $stmt->fetch();
+        $student = Student::where('nisn', $nisn)->first(['nisn', 'nama', 'jk', 'kelas']);
 
         if ($student) {
-            echo json_encode(['success' => true, 'student' => $student]);
+            echo json_encode(['success' => true, 'student' => $student->toArray()]);
         } else {
             echo json_encode(['success' => false, 'message' => 'NISN tidak ditemukan. Periksa kembali.']);
         }
     } elseif ($action === 'check_password') {
-        $stmt = $pdo->prepare("SELECT * FROM students WHERE nisn = ?");
-        $stmt->execute([$nisn]);
-        $student = $stmt->fetch();
+        $student = Student::where('nisn', $nisn)->first();
 
-        if ($student && $password === $student['password']) {
-            // Note: In production use password_hash/verify, but per original logic it matches directly
-            echo json_encode(['success' => true, 'student' => $student]);
+        if ($student && $password === $student->password) {
+            echo json_encode(['success' => true, 'student' => $student->toArray()]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Password salah. Silakan coba lagi.']);
         }

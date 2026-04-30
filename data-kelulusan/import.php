@@ -1,5 +1,8 @@
 <?php
 require_once __DIR__ . '/config.php';
+use App\Models\Student;
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 checkAuth();
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -9,7 +12,6 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['import_file'])) {
     $file = $_FILES['import_file']['tmp_name'];
-    $ext = pathinfo($_FILES['import_file']['name'], PATHINFO_EXTENSION);
     
     if (is_uploaded_file($file)) {
         try {
@@ -18,41 +20,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['import_file'])) {
             $dataRows = $sheet->toArray();
             
             // Skip header (first row)
-            $header = array_shift($dataRows);
+            array_shift($dataRows);
             
-            $rowCount = 0;
             $successCount = 0;
             
-            $pdo->beginTransaction();
-            $stmt = $pdo->prepare("INSERT INTO students (nisn, nama, jk, kelas, password, lulus) 
-                                 VALUES (?, ?, ?, ?, ?, ?) 
-                                 ON DUPLICATE KEY UPDATE 
-                                 nama = VALUES(nama), jk = VALUES(jk), kelas = VALUES(kelas), 
-                                 password = VALUES(password), lulus = VALUES(lulus)");
-            
-            foreach ($dataRows as $row) {
-                if (count($row) >= 6 && !empty($row[0])) {
-                    // Smart JK Mapping
-                    $jk = strtoupper(trim($row[2]));
-                    if (strpos($jk, 'L') === 0) $jk = 'L';
-                    elseif (strpos($jk, 'P') === 0) $jk = 'P';
+            Capsule::transaction(function() use ($dataRows, &$successCount) {
+                foreach ($dataRows as $row) {
+                    if (count($row) >= 6 && !empty($row[0])) {
+                        // Smart JK Mapping
+                        $jk = strtoupper(trim($row[2]));
+                        if (strpos($jk, 'L') === 0) $jk = 'L';
+                        elseif (strpos($jk, 'P') === 0) $jk = 'P';
 
-                    $stmt->execute([
-                        trim($row[0]), // nisn
-                        trim($row[1]), // nama
-                        $jk,           // jk
-                        trim($row[3]), // kelas
-                        trim($row[4]), // password
-                        trim($row[5])  // lulus (1/0)
-                    ]);
-                    $successCount++;
+                        Student::updateOrCreate(
+                            ['nisn' => trim($row[0])],
+                            [
+                                'nama' => trim($row[1]),
+                                'jk' => $jk,
+                                'kelas' => trim($row[3]),
+                                'password' => trim($row[4]),
+                                'lulus' => trim($row[5])
+                            ]
+                        );
+                        $successCount++;
+                    }
                 }
-                $rowCount++;
-            }
-            $pdo->commit();
+            });
             $message = "Berhasil mengimpor $successCount data siswa dari file Excel/CSV.";
         } catch (Exception $e) {
-            if ($pdo->inTransaction()) $pdo->rollBack();
             $error = "Terjadi kesalahan: " . $e->getMessage();
         }
     } else {

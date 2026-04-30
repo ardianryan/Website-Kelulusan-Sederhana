@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/config.php';
+use App\Models\Setting;
+
 checkAuth();
 
 $message = '';
@@ -8,9 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle Text Settings
     if (isset($_POST['settings'])) {
         foreach ($_POST['settings'] as $key => $value) {
-            $stmt = $pdo->prepare("INSERT INTO settings (`key`, `value`) VALUES (?, ?) 
-                                 ON DUPLICATE KEY UPDATE `value` = ?");
-            $stmt->execute([$key, $value, $value]);
+            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
     }
 
@@ -25,20 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if (move_uploaded_file($_FILES['school_logo']['tmp_name'], $targetPath)) {
             $logoUrl = '/uploads/' . $logoName;
-            $stmt = $pdo->prepare("INSERT INTO settings (`key`, `value`) VALUES ('school_logo', ?) 
-                                 ON DUPLICATE KEY UPDATE `value` = ?");
-            $stmt->execute([$logoUrl, $logoUrl]);
+            Setting::updateOrCreate(['key' => 'school_logo'], ['value' => $logoUrl]);
         }
     }
     
     $message = "Pengaturan berhasil disimpan.";
 }
 
-$settings = [];
-$stmt = $pdo->query("SELECT * FROM settings");
-while ($row = $stmt->fetch()) {
-    $settings[$row['key']] = $row['value'];
-}
+$settings = Setting::pluck('value', 'key')->toArray();
 ?>
 <!DOCTYPE html>
 <html lang="id">

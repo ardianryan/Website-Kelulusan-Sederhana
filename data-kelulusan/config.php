@@ -4,6 +4,8 @@
  */
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 // Load .env
 if (file_exists(__DIR__ . '/../.env')) {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
@@ -11,17 +13,34 @@ if (file_exists(__DIR__ . '/../.env')) {
 }
 
 $host = $_ENV['DB_HOST'] ?? 'localhost';
-$dbname = $_ENV['DB_NAME'] ?? 'kelulusan_sman1sooko';
+$dbname = $_ENV['DB_NAME'] ?? '';
 $username = $_ENV['DB_USER'] ?? 'root';
 $password = $_ENV['DB_PASS'] ?? '';
 
+// Initialize Eloquent
+$capsule = new Capsule;
+$capsule->addConnection([
+    'driver' => 'mysql',
+    'host' => $host,
+    'database' => $dbname,
+    'username' => $username,
+    'password' => $password,
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
+    'prefix' => '',
+]);
+
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
+
+// Maintain $pdo for backward compatibility
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
+    $pdo = Capsule::connection()->getPdo();
+} catch (Exception $e) {
     die("Connection failed: " . $e->getMessage());
 }
+
+require_once __DIR__ . '/models.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_name('sman1sooko_admin');
