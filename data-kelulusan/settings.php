@@ -2,6 +2,7 @@
 require_once __DIR__ . '/config.php';
 use App\Models\Setting;
 use App\Models\Admin;
+use App\Models\Student;
 
 checkAuth();
 
@@ -9,6 +10,16 @@ $message = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Handle Reset Data
+    if (isset($_POST['reset_students'])) {
+        try {
+            Student::truncate();
+            $message = "Semua data siswa telah berhasil dihapus.";
+        } catch (Exception $e) {
+            $error = "Gagal menghapus data: " . $e->getMessage();
+        }
+    }
+
     // Handle Text Settings
     if (isset($_POST['settings'])) {
         foreach ($_POST['settings'] as $key => $value) {
@@ -188,6 +199,17 @@ $settings = Setting::pluck('value', 'key')->toArray();
                     </div>
                 </div>
                 <p class="text-[11px] text-slate-500 italic">*Kosongkan jika tidak ingin mengubah password admin.</p>
+            </div>
+
+            <div class="glass p-8 rounded-3xl space-y-6">
+                <h3 class="text-lg font-bold border-b border-white/10 pb-4 text-red-400">Zona Bahaya</h3>
+                
+                <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl">
+                    <p class="text-sm text-red-200 mb-4">Menghapus semua data siswa akan mengosongkan tabel pengumuman. Tindakan ini tidak dapat dibatalkan.</p>
+                    <button type="submit" name="reset_students" value="1" onclick="return confirm('Apakah Anda yakin ingin MENGHAPUS SEMUA data siswa? Tindakan ini permanen!')" class="bg-red-500/20 hover:bg-red-500/40 text-red-400 px-6 py-2 rounded-xl text-sm font-bold border border-red-500/30 transition">
+                        Reset Data Siswa Sekarang
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="bg-[#40A69F] hover:bg-[#2B7A6D] text-white px-10 py-4 rounded-2xl font-bold transition shadow-lg shadow-emerald-500/20">
