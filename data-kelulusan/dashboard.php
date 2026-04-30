@@ -154,14 +154,14 @@ $tidakLulusCount = $pdo->query("SELECT COUNT(*) FROM students WHERE lulus = 0")-
                     <tbody class="divide-y divide-white/5">
                         <?php foreach ($students as $s): ?>
                         <tr class="hover:bg-white/[0.02] transition">
-                            <td class="px-6 py-4 text-sm font-semibold whitespace-nowrap"><?= htmlspecialchars($s['nama']) ?></td>
-                            <td class="px-6 py-4 text-sm font-mono"><?= htmlspecialchars($s['nisn']) ?></td>
-                            <td class="px-6 py-4 text-sm text-slate-400 font-mono"><?= htmlspecialchars($s['nipd']) ?></td>
+                            <td class="px-6 py-4 text-sm font-semibold whitespace-nowrap"><?= htmlspecialchars($s['nama'] ?? '') ?></td>
+                            <td class="px-6 py-4 text-sm font-mono"><?= htmlspecialchars($s['nisn'] ?? '') ?></td>
+                            <td class="px-6 py-4 text-sm text-slate-400 font-mono"><?= htmlspecialchars($s['nipd'] ?? '') ?></td>
                             <td class="px-6 py-4 text-xs text-slate-500 italic">
-                                <?= htmlspecialchars($s['tempat_lahir']) ?>, <?= htmlspecialchars($s['tanggal_lahir']) ?>
+                                <?= htmlspecialchars($s['tempat_lahir'] ?? '') ?>, <?= htmlspecialchars($s['tanggal_lahir'] ?? '') ?>
                             </td>
-                            <td class="px-6 py-4 text-sm text-slate-400"><?= htmlspecialchars($s['rombel']) ?></td>
-                            <td class="px-6 py-4 text-sm text-slate-400"><?= htmlspecialchars($s['jk']) ?></td>
+                            <td class="px-6 py-4 text-sm text-slate-400"><?= htmlspecialchars($s['rombel'] ?? '') ?></td>
+                            <td class="px-6 py-4 text-sm text-slate-400"><?= htmlspecialchars($s['jk'] ?? '') ?></td>
                             <td class="px-6 py-4">
                                 <?php if ($s['lulus']): ?>
                                     <span class="bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg text-xs font-bold uppercase">Lulus</span>
