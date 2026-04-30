@@ -13,20 +13,6 @@ Website portal pengumuman kelulusan siswa berbasis PHP yang modern, responsif, d
 - **Keamanan .env**: Menggunakan variabel lingkungan untuk menyimpan kredensial database agar lebih aman.
 - **Countdown Timer**: Sistem pembukaan pengumuman otomatis berdasarkan waktu yang diatur di database.
 
-## 📸 Screenshots
-
-### 1. Halaman Utama (Cek NISN)
-Tampilan awal yang bersih dengan fitur countdown dan form input NISN yang elegan.
-![Home Page](assets/screenshots/home.png)
-
-### 2. Transisi Kelulusan (Star Wars Style)
-Efek teks berjalan 3D yang memberikan kejutan dan kesan meriah bagi siswa yang dinyatakan lulus.
-![Transition](assets/screenshots/transition.png)
-
-### 3. Tiket Pengumuman
-Hasil akhir berupa kartu digital (ticket style) yang berisi informasi detail siswa dan instruksi pengambilan SKL.
-![Ticket](assets/screenshots/ticket.png)
-
 ## 🚀 Instalasi
 
 1. **Clone/Download** repositori ini ke folder server lokal Anda (XAMPP/Laragon).
