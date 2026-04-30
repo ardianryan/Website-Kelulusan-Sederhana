@@ -557,11 +557,23 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                     keamanan data Anda</p>
             </div>
             <div class="glass" style="padding:28px">
-                <div style="position:relative;margin-bottom:12px">
-                    <input type="password" id="passwordInput" class="input-glass" placeholder="Masukkan Password"
-                        style="padding-right:48px"> <button onclick="togglePassword()"
-                        style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;display:flex;align-items:center;justify-content:center"><span
-                            class="material-icons" id="eyeIcon" style="font-size:18px">visibility</span></button>
+                <p style="color:rgba(255,255,255,0.4);font-size:11px;text-transform:uppercase;margin-bottom:12px;font-weight:700;letter-spacing:1px">Tanggal Lahir</p>
+                <div style="display:grid; grid-template-columns: 1fr 1.8fr 1.2fr; gap:10px; margin-bottom:20px">
+                    <div>
+                        <input type="number" id="birthDay" class="input-glass" placeholder="Tgl" min="1" max="31" style="padding: 14px 10px; text-align: center;">
+                    </div>
+                    <div>
+                        <select id="birthMonth" class="input-glass" style="padding: 14px 10px; cursor: pointer; appearance: none; -webkit-appearance: none;">
+                            <option value="">Bulan</option>
+                            <?php 
+                            $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                            foreach ($months as $m) echo "<option value='$m'>$m</option>";
+                            ?>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="number" id="birthYear" class="input-glass" placeholder="Tahun" min="1990" max="2020" style="padding: 14px 10px; text-align: center;">
+                    </div>
                 </div>
                 <div id="passError" style="color:#FF576F;font-size:12px;margin-bottom:12px;display:none"></div>
                 <div style="display:flex;flex-direction:column;gap:12px;">
@@ -709,7 +721,10 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                     err.style.display = 'none';
                     currentStudent = result.student;
                     showStep(2);
-                    document.getElementById('passwordInput').value = '';
+                    // Reset date inputs
+                    document.getElementById('birthDay').value = '';
+                    document.getElementById('birthMonth').value = '';
+                    document.getElementById('birthYear').value = '';
                     document.getElementById('passError').style.display = 'none';
                 } else {
                     err.textContent = result.message;
@@ -721,22 +736,26 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
             }
         }
 
-        function togglePassword() {
-            const p = document.getElementById('passwordInput');
-            const icon = document.getElementById('eyeIcon');
-            p.type = p.type === 'password' ? 'text' : 'password';
-            icon.textContent = p.type === 'password' ? 'visibility' : 'visibility_off';
-        }
-
         async function checkPassword() {
-            const v = document.getElementById('passwordInput').value;
+            const d = document.getElementById('birthDay').value;
+            const m = document.getElementById('birthMonth').value;
+            const y = document.getElementById('birthYear').value;
             const err = document.getElementById('passError');
-            if (!v) { err.textContent = 'Password tidak boleh kosong'; err.style.display = 'block'; return }
+
+            if (!d || !m || !y) { 
+                err.textContent = 'Harap lengkapi tanggal lahir Anda'; 
+                err.style.display = 'block'; 
+                return; 
+            }
+
+            // Format: DD Bulan YYYY (e.g. 02 Desember 2007)
+            const paddedDay = d.toString().padStart(2, '0');
+            const passwordValue = `${paddedDay} ${m} ${y}`;
 
             try {
                 const formData = new FormData();
                 formData.append('nisn', currentStudent.nisn);
-                formData.append('password', v);
+                formData.append('password', passwordValue);
                 formData.append('action', 'check_password');
 
                 const response = await fetch('check_student.php', {
