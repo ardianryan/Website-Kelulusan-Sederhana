@@ -26,20 +26,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['import_file'])) {
             
             Capsule::transaction(function() use ($dataRows, &$successCount) {
                 foreach ($dataRows as $row) {
-                    if (count($row) >= 6 && !empty($row[0])) {
-                        // Smart JK Mapping
-                        $jk = strtoupper(trim($row[2]));
+                    if (count($row) >= 8 && !empty($row[2])) {
+                        $nisn = trim($row[2]);
+                        $nama = trim($row[1]);
+                        $nipd = trim($row[3]);
+                        $tempat_lahir = trim($row[4]);
+                        $tanggal_lahir = trim($row[5]);
+                        $rombel = trim($row[6]);
+                        
+                        $jk = strtoupper(trim($row[7] ?? ''));
                         if (strpos($jk, 'L') === 0) $jk = 'L';
                         elseif (strpos($jk, 'P') === 0) $jk = 'P';
+                        else $jk = '-';
+
+                        $keterangan = strtoupper(trim($row[8] ?? ''));
+                        $isLulus = (strpos($keterangan, 'LULUS') !== false && strpos($keterangan, 'TIDAK') === false);
 
                         Student::updateOrCreate(
-                            ['nisn' => trim($row[0])],
+                            ['nisn' => $nisn],
                             [
-                                'nama' => trim($row[1]),
+                                'nama' => $nama,
+                                'nipd' => $nipd,
                                 'jk' => $jk,
-                                'kelas' => trim($row[3]),
-                                'password' => trim($row[4]),
-                                'lulus' => trim($row[5])
+                                'tempat_lahir' => $tempat_lahir,
+                                'tanggal_lahir' => $tanggal_lahir,
+                                'rombel' => $rombel,
+                                'password' => password_hash($tanggal_lahir, PASSWORD_DEFAULT),
+                                'lulus' => $isLulus
                             ]
                         );
                         $successCount++;
@@ -148,22 +161,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['import_file'])) {
                 <table class="w-full text-xs text-left text-slate-300 border-collapse mb-6">
                     <thead class="bg-white/10">
                         <tr>
-                            <th class="p-2 border border-white/10">NISN</th>
-                            <th class="p-2 border border-white/10">Nama</th>
-                            <th class="p-2 border border-white/10">JK</th>
-                            <th class="p-2 border border-white/10">Kelas</th>
-                            <th class="p-2 border border-white/10">Pass</th>
-                            <th class="p-2 border border-white/10">Lulus</th>
+                            <th class="p-2 border border-white/10 text-[10px]">No</th>
+                            <th class="p-2 border border-white/10 text-[10px]">Nama</th>
+                            <th class="p-2 border border-white/10 text-[10px]">NISN</th>
+                            <th class="p-2 border border-white/10 text-[10px]">NIPD</th>
+                            <th class="p-2 border border-white/10 text-[10px]">Tempat Lahir</th>
+                            <th class="p-2 border border-white/10 text-[10px]">Tanggal Lahir</th>
+                            <th class="p-2 border border-white/10 text-[10px]">Rombel</th>
+                            <th class="p-2 border border-white/10 text-[10px]">JK</th>
+                            <th class="p-2 border border-white/10 text-[10px]">Keterangan</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="bg-white/5">
-                            <td class="p-2 border border-white/10">00123...</td>
-                            <td class="p-2 border border-white/10">Ahmad Rizky</td>
-                            <td class="p-2 border border-white/10">L</td>
-                            <td class="p-2 border border-white/10">XII IPA 1</td>
-                            <td class="p-2 border border-white/10">pass001</td>
                             <td class="p-2 border border-white/10">1</td>
+                            <td class="p-2 border border-white/10">Ahmad Rizky</td>
+                            <td class="p-2 border border-white/10">00123...</td>
+                            <td class="p-2 border border-white/10">12345</td>
+                            <td class="p-2 border border-white/10">Sidoarjo</td>
+                            <td class="p-2 border border-white/10">2005-05-05</td>
+                            <td class="p-2 border border-white/10">XII IPA 1</td>
+                            <td class="p-2 border border-white/10">L</td>
+                            <td class="p-2 border border-white/10">LULUS</td>
                         </tr>
                     </tbody>
                 </table>
@@ -179,7 +198,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['import_file'])) {
                     </li>
                     <li class="flex items-start gap-2">
                         <span class="material-icons text-emerald-500 text-sm mt-0.5">check</span>
-                        <span><strong>Lulus</strong>: 1 (Lulus) atau 0 (Tidak Lulus).</span>
+                        <span><strong>Tanggal Lahir</strong>: Akan otomatis dijadikan <strong>Password</strong> siswa.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="material-icons text-emerald-500 text-sm mt-0.5">check</span>
+                        <span><strong>Keterangan</strong>: "LULUS" atau "TIDAK LULUS".</span>
                     </li>
                     <li class="flex items-start gap-2 bg-orange-500/10 p-3 rounded-xl border border-orange-500/20 mt-4">
                         <span class="material-icons text-orange-400 text-sm mt-0.5">info</span>

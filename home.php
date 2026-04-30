@@ -784,8 +784,8 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                             <p style="font-size: 14px; font-weight: 600; color: #fff;">${currentStudent.nisn}</p>
                         </div>
                         <div>
-                            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Kelas</p>
-                            <p style="font-size: 14px; font-weight: 600; color: #fff;">${currentStudent.kelas}</p>
+                            <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Rombel</p>
+                            <p style="font-size: 14px; font-weight: 600; color: #fff;">${currentStudent.rombel}</p>
                         </div>
                         <div style="grid-column: span 2;">
                             <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase;">Jenis Kelamin</p>
@@ -948,8 +948,8 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                     <p style="font-size: 15px; font-weight: 600; color: #A8E4DB;">${currentStudent.nisn}</p>
                 </div>
                 <div style="width: 50%;">
-                    <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 2px;">Kelas</p>
-                    <p style="font-size: 15px; font-weight: 600; color: #fff;">${currentStudent.kelas}</p>
+                    <p style="font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 2px;">Rombel</p>
+                    <p style="font-size: 15px; font-weight: 600; color: #fff;">${currentStudent.rombel}</p>
                 </div>
             </div>
             
@@ -992,7 +992,7 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
         <div style="background: rgba(255,255,255,0.03); padding: 28px 24px;">
             <div style="margin-bottom: 24px;">
                 <p style="font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 4px;">${currentStudent.nama}</p>
-                <p style="font-size: 14px; color: rgba(255,255,255,0.5);">NISN: ${currentStudent.nisn} <span style="margin:0 8px">•</span> Kelas: ${currentStudent.kelas}</p>
+                <p style="font-size: 14px; color: rgba(255,255,255,0.5);">NISN: ${currentStudent.nisn} <span style="margin:0 8px">•</span> Rombel: ${currentStudent.rombel}</p>
             </div>
             
             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 12px;">
@@ -1002,7 +1002,7 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                 <div style="display: flex; align-items: flex-start; gap: 12px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px;">
                     <span class="material-icons" style="font-size: 18px; color: #FCA2A4; margin-top: 2px;">info</span>
                     <p style="font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5;">
-                        Silakan menghubungi Wali Kelas atau bagian Administrasi sekolah untuk informasi lebih lanjut mengenai hasil kelulusan Anda.
+                        Silakan menghubungi Wali Rombel atau bagian Administrasi sekolah untuk informasi lebih lanjut mengenai hasil kelulusan Anda.
                     </p>
                 </div>
             </div>

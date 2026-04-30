@@ -11,7 +11,7 @@ $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
 // Set Header
-$headers = ['NISN', 'Nama Lengkap', 'Jenis Kelamin (L/P)', 'Kelas', 'Password', 'Lulus (1/0)'];
+$headers = ['No', 'Nama', 'NISN', 'NIPD', 'Tempat Lahir', 'Tanggal Lahir', 'Rombel Saat Ini', 'JK', 'Keterangan'];
 foreach ($headers as $index => $header) {
     $col = Coordinate::stringFromColumnIndex($index + 1);
     $sheet->setCellValue($col . '1', $header);
@@ -19,8 +19,8 @@ foreach ($headers as $index => $header) {
 
 // Add Example Data
 $examples = [
-    ['0012345001', 'Ahmad Rizky Pratama', 'L', 'XII IPA 1', 'pass001', '1'],
-    ['0012345002', 'Siti Nurhaliza', 'P', 'XII IPA 2', 'pass002', '1'],
+    ['1', 'Ahmad Rizky Pratama', '0012345001', '12345', 'Sidoarjo', '2005-05-05', 'XII IPA 1', 'L', 'LULUS'],
+    ['2', 'Siti Nurhaliza', '0012345002', '12346', 'Mojokerto', '2005-06-12', 'XII IPA 2', 'P', 'LULUS'],
 ];
 
 foreach ($examples as $rowIndex => $row) {
@@ -31,8 +31,8 @@ foreach ($examples as $rowIndex => $row) {
 }
 
 // Styling
-$sheet->getStyle('A1:F1')->getFont()->setBold(true);
-foreach (range('A', 'F') as $col) {
+$sheet->getStyle('A1:I1')->getFont()->setBold(true);
+foreach (range('A', 'I') as $col) {
     $sheet->getColumnDimension($col)->setAutoSize(true);
 }
 

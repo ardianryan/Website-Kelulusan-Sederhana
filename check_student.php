@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
     if ($action === 'check_nisn') {
-        $student = Student::where('nisn', $nisn)->first(['nisn', 'nama', 'jk', 'kelas']);
+        $student = Student::where('nisn', $nisn)->first(['nisn', 'nama', 'jk', 'rombel', 'nipd', 'tempat_lahir', 'tanggal_lahir']);
 
         if ($student) {
             echo json_encode(['success' => true, 'student' => $student->toArray()]);
@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'check_password') {
         $student = Student::where('nisn', $nisn)->first();
 
-        if ($student && $password === $student->password) {
+        if ($student && password_verify($password, $student->password)) {
             echo json_encode(['success' => true, 'student' => $student->toArray()]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Password salah. Silakan coba lagi.']);
+            echo json_encode(['success' => false, 'message' => 'Password (Tanggal Lahir) salah. Silakan coba lagi.']);
         }
     }
 }

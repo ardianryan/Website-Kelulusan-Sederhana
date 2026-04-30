@@ -141,22 +141,27 @@ $tidakLulusCount = $pdo->query("SELECT COUNT(*) FROM students WHERE lulus = 0")-
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-white/5 text-slate-400 text-xs uppercase tracking-wider">
+                        <tr class="bg-white/5 text-slate-400 text-[10px] uppercase tracking-wider">
+                            <th class="px-6 py-4">Nama</th>
                             <th class="px-6 py-4">NISN</th>
-                            <th class="px-6 py-4">Nama Lengkap</th>
+                            <th class="px-6 py-4">NIPD</th>
+                            <th class="px-6 py-4">Lahir</th>
+                            <th class="px-6 py-4">Rombel</th>
                             <th class="px-6 py-4">JK</th>
-                            <th class="px-6 py-4">Kelas</th>
                             <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4">Password</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/5">
                         <?php foreach ($students as $s): ?>
                         <tr class="hover:bg-white/[0.02] transition">
+                            <td class="px-6 py-4 text-sm font-semibold whitespace-nowrap"><?= htmlspecialchars($s['nama']) ?></td>
                             <td class="px-6 py-4 text-sm font-mono"><?= htmlspecialchars($s['nisn']) ?></td>
-                            <td class="px-6 py-4 text-sm font-semibold"><?= htmlspecialchars($s['nama']) ?></td>
+                            <td class="px-6 py-4 text-sm text-slate-400 font-mono"><?= htmlspecialchars($s['nipd']) ?></td>
+                            <td class="px-6 py-4 text-xs text-slate-500 italic">
+                                <?= htmlspecialchars($s['tempat_lahir']) ?>, <?= htmlspecialchars($s['tanggal_lahir']) ?>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-slate-400"><?= htmlspecialchars($s['rombel']) ?></td>
                             <td class="px-6 py-4 text-sm text-slate-400"><?= htmlspecialchars($s['jk']) ?></td>
-                            <td class="px-6 py-4 text-sm text-slate-400"><?= htmlspecialchars($s['kelas']) ?></td>
                             <td class="px-6 py-4">
                                 <?php if ($s['lulus']): ?>
                                     <span class="bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg text-xs font-bold uppercase">Lulus</span>
@@ -164,12 +169,11 @@ $tidakLulusCount = $pdo->query("SELECT COUNT(*) FROM students WHERE lulus = 0")-
                                     <span class="bg-red-500/10 text-red-400 px-2.5 py-1 rounded-lg text-xs font-bold uppercase">Tidak Lulus</span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-6 py-4 text-sm text-slate-500 font-mono"><?= htmlspecialchars($s['password']) ?></td>
                         </tr>
                         <?php endforeach; ?>
                         <?php if (empty($students)): ?>
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-slate-500">Data siswa tidak ditemukan.</td>
+                            <td colspan="7" class="px-6 py-10 text-center text-slate-500">Data siswa tidak ditemukan.</td>
                         </tr>
                         <?php endif; ?>
                     </tbody>

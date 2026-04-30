@@ -38,9 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "CREATE TABLE IF NOT EXISTS students (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 nisn VARCHAR(255) NOT NULL UNIQUE,
+                nipd VARCHAR(50),
                 nama VARCHAR(100) NOT NULL,
                 jk VARCHAR(10) NOT NULL,
-                kelas VARCHAR(50) NOT NULL,
+                tempat_lahir VARCHAR(100),
+                tanggal_lahir VARCHAR(50),
+                rombel VARCHAR(50) NOT NULL,
                 password VARCHAR(255) NOT NULL,
                 lulus BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
