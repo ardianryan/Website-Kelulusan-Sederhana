@@ -550,10 +550,10 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                     <div
                         style="position:absolute;inset:0;background:inherit;border-radius:inherit;filter:blur(10px);opacity:0.5;z-index:-1;">
                     </div>
-                    <span class="material-icons" style="font-size:32px;color:#40A69F">lock</span>
+                    <span class="material-icons" style="font-size:32px;color:#40A69F">calendar_month</span>
                 </div>
                 <h2 style="font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.5px;">Verifikasi Identitas</h2>
-                <p style="color:rgba(255,255,255,0.5);font-size:14px;margin-top:8px;">Silakan masukkan password untuk
+                <p style="color:rgba(255,255,255,0.5);font-size:14px;margin-top:8px;">Silakan masukkan tanggal lahir untuk
                     keamanan data Anda</p>
             </div>
             <div class="glass" style="padding:28px">
@@ -579,7 +579,7 @@ $schoolLogo = isset($settings['school_logo']) ? baseUrl($settings['school_logo']
                 <div style="display:flex;flex-direction:column;gap:12px;">
                     <button class="btn-primary" onclick="checkPassword()">
                         <span style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%">
-                            <span class="material-icons" style="font-size:20px">lock_open</span>
+                            <span class="material-icons" style="font-size:20px">verified</span>
                             <span>Verifikasi</span>
                         </span>
                     </button>
