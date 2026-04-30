@@ -25,7 +25,7 @@ $total_stmt->execute($params);
 $total_items = $total_stmt->fetchColumn();
 
 // Fetch Students
-$query = "SELECT * FROM students WHERE $where ORDER BY kelas ASC, nama ASC, lulus DESC";
+$query = "SELECT * FROM students WHERE $where ORDER BY rombel ASC, nama ASC, lulus DESC";
 if ($limit !== 'all') {
     $query .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
 }
